@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Burger App</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 20px;
+            color: blue;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🍔 BurgerApp</h1>
+
+<h2>Menu</h2>
+
+<button onclick="showPrice('Chicken Burger', 150)">🍗 Chicken Burger</button>
+<button onclick="showPrice('Veg Burger', 120)">🥬 Veg Burger</button>
+<button onclick="showPrice('Pepsi', 50)">🥤 Pepsi</button>
+<button onclick="showPrice('Coke', 50)">🥤 Coke</button>
+<button onclick="showPrice('Dessert', 100)">🍰 Dessert</button>
+
+<div id="output"></div>
+
+<script>
+function showPrice(item, price) {
+    document.getElementById("output").innerHTML = 
+        item + " = ₹" + price + " (Click here to order)";
+    
+    document.getElementById("output").onclick = function() {
+        placeOrder();
+    };
+}
+
+function placeOrder() {
+    document.getElementById("output").innerHTML = "✅ Order Placed!";
+}
+</script>
+
+</body>
+</html>
