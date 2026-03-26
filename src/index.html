@@ -4,22 +4,11 @@
     <title>Burger App</title>
 
     <style>
-        body {
-            font-family: Arial;
-            text-align: center;
-        }
-
-        button {
+        body { font-family: Arial; text-align: center; }
+        .menu-item {
             margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        #output {
-            margin-top: 20px;
-            font-size: 20px;
-            color: blue;
+            padding: 10px;
+            border: 1px solid black;
             cursor: pointer;
         }
     </style>
@@ -27,39 +16,94 @@
 
 <body>
 
-<h1>🍔 BurgerApp</h1>
+<h1>🍔 Burger App</h1>
 
-<h2>Menu</h2>
+<button onclick="showMenu()">📋 Show Menu</button>
 
-<button onclick="getPrice('chicken')">🍗 Chicken Burger</button>
-<button onclick="getPrice('veg')">🥬 Veg Burger</button>
-<button onclick="getPrice('pepsi')">🥤 Pepsi</button>
-<button onclick="getPrice('coke')">🥤 Coke</button>
-<button onclick="getPrice('dessert')">🍰 Dessert</button>
+<div id="menu"></div>
+
+<h2>🛒 Cart</h2>
+<div id="cart"></div>
+
+<button onclick="confirmOrder()">✅ Confirm</button>
+<button onclick="cancelOrder()">❌ Cancel</button>
 
 <div id="output"></div>
 
 <script>
-function getPrice(item) {
-    fetch("http://localhost:3000/price/" + item)
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById("output").innerHTML =
-            item + " = ₹" + data.price + " (Click to order)";
 
-        document.getElementById("output").onclick = function() {
-            placeOrder();
-        };
+// 🔥 SHOW MENU (SIMPLE + WORKING)
+function showMenu() {
+
+    fetch("http://localhost:3000/menu")
+    .then(res => res.json())
+    .then(data => {
+
+        let output = "";
+
+        for (let item in data) {
+            output += `
+            <div class="menu-item" onclick="addToCart('${item}')">
+                ${item.toUpperCase()} - ₹${data[item]}
+            </div>`;
+        }
+
+        document.getElementById("menu").innerHTML = output;
     })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("Error connecting to backend");
+    .catch(err => {
+        console.error(err);
+        alert("Backend not running!");
     });
 }
 
-function placeOrder() {
-    document.getElementById("output").innerHTML = "✅ Order Placed!";
+// 🛒 ADD TO CART
+function addToCart(item) {
+
+    let addon = prompt("Add-ons? mustard / chilli / cheese / no");
+
+    fetch("http://localhost:3000/add-to-cart", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ item, addon })
+    })
+    .then(() => loadCart());
 }
+
+// 📦 LOAD CART
+function loadCart() {
+    fetch("http://localhost:3000/cart")
+    .then(res => res.json())
+    .then(data => {
+        let output = "";
+        data.forEach(i => {
+            output += i.item + " = ₹" + i.price + "<br>";
+        });
+        document.getElementById("cart").innerHTML = output;
+    });
+}
+
+// ✅ CONFIRM
+function confirmOrder() {
+    fetch("http://localhost:3000/confirm", { method: "POST" })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("output").innerHTML = data.message;
+        loadCart();
+    });
+}
+
+// ❌ CANCEL
+function cancelOrder() {
+    fetch("http://localhost:3000/cancel", { method: "POST" })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("output").innerHTML = data.message;
+        loadCart();
+    });
+}
+
 </script>
 
 </body>

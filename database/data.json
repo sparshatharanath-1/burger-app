@@ -1,7 +1,25 @@
 {
-  "chicken": 150,
-  "veg": 120,
-  "pepsi": 50,
-  "coke": 50,
-  "dessert": 100
+  "menu": {
+    "chicken": 150,
+    "veg": 120,
+    "fries": 80,
+    "nuggets": 120,
+    "pepsi": 50,
+    "coke": 50,
+    "dessert": 100
+  },
+  "orders": [
+    {
+      "item": "chicken",
+      "price": 150
+    },
+    {
+      "item": "chicken",
+      "price": 150
+    },
+    {
+      "item": "dessert",
+      "price": 100
+    }
+  ]
 }
